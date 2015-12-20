@@ -1,6 +1,6 @@
 # Node.js - Aula 02 - Exercício  
 **Autor:** Ednilson Amaral  
-**Data:** 
+**Data:** 1450649579988
 
 ## Quais são os 4 verbos que utilizamos para o CRUD?  
 
