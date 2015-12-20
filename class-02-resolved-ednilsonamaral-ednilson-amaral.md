@@ -87,8 +87,11 @@ var http = require('http')
   , url = require('url')
   , SUCCCESS = 
     { version: '1.0'
-    , name: 'Exercício 02 Node.js'
+    , name: 'JSON para 4 rotas diferentes'
     , returned_at: date
+    }
+    , ERROR = {
+        message: "Deu alguma merda, mano!"
     }
   ;
 
@@ -106,6 +109,8 @@ http.createServer(function(request, response){
     if (routes[key] === pathname) {
       response.writeHead(200, {'Content-Type': 'application/json; charset=UTF-8'});
       response.write(JSON.stringify(SUCCESS));
+    } else {
+      response.write(JSON.stringfy(ERROR));
     }
   }
 
