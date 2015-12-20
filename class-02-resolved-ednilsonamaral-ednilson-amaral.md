@@ -98,10 +98,10 @@ var http = require('http')
 http.createServer(function(request, response){
   var pathname = url.parse(request.url).pathname
     , routes = [ 
-    	'/api/v2/'
-      , '/api/v3/'
-      , '/api/v4/'
-      , '/api/v5/'
+    	'/api/pokemons/create'
+      , '/api/pokemons/read'
+      , '/api/pokemons/update'
+      , '/api/pokemons/delete'
       ]
     ;
 
