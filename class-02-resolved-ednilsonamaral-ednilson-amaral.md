@@ -110,7 +110,7 @@ http.createServer(function(request, response){
       response.writeHead(200, {'Content-Type': 'application/json; charset=UTF-8'});
       response.write(JSON.stringify(SUCCESS));
     } else {
-      response.writeHead(200, {'Content-Type': 'application/json; charset=UTF-8'});
+      response.writeHead(404, {'Content-Type': 'application/json; charset=UTF-8'});
       response.write(JSON.stringfy(ERROR));
     }
   }
