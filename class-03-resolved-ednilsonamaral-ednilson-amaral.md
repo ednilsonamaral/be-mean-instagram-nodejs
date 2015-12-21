@@ -83,7 +83,7 @@ http.get({
   });  
  
   response.on('end', function(){  
-    var transform = {'tag':'div','html':'${name} name ${name}'};  
+    var transform = {'tag':'div','html':'${name}'};  
      
     var html = json2html.transform(body,transform);  
     console.log('RESPOSTA: ', html);  
@@ -96,6 +96,6 @@ Após o script para fazer uma `GET` nela o resultado foi:
 ```  
 ednilson@EDNILSON-NB:/var/www/workshop-be-mean/nodejs$ node http-get-api-externa.js  
 STATUS: 200  
-HEADERS: {"server":"nginx/1.1.19","date":"Mon, 21 Dec 2015 02:12:49 GMT","content-type":"application/json","transfer-encoding":"chunked","connection":"close","vary":"Accept","x-frame-options":"SAMEORIGIN","cache-control":"s-maxage=360, max-age=360"}  
-RESPOSTA:  <div>Bulbasaur name Bulbasaur</div>  
+HEADERS: {"server":"nginx/1.1.19","date":"Mon, 21 Dec 2015 02:18:34 GMT","content-type":"application/json","transfer-encoding":"chunked","connection":"close","vary":"Accept","x-frame-options":"SAMEORIGIN","cache-control":"s-maxage=360, max-age=360"}  
+RESPOSTA:  <div>Bulbasaur</div>  
 ```
