@@ -57,8 +57,45 @@ Dados finalizados:
 
 ## Escolha uma API externa e crie um script para fazer um GET nela mostrando o resultado com HTML.  
 
-A API externa escolhida foi a **nome_API_externa**. Após o script para fazer uma `GET` nela o resultado foi:  
+A API externa escolhida foi a **pokeapi.co**, já utiliza em aula anteriormente.  
 
+O arquivo `http-get-api-externa.js` contém:  
+
+```js  
+'use strict';  
+
+const http = require('http');  
+const json2html = require('node-json2html');  
+
+http.get({  
+  hostname: 'pokeapi.co',  
+  path: '/api/v1/pokemon/1/',  
+  agent: false  
+},function(response){  
+    let body = '';  
+    
+    console.log('STATUS: '+response.statusCode);  
+    console.log('HEADERS: '+JSON.stringify(response.headers));  
+    
+    response.on('data', function(data){  
+    
+    body += data;  
+  });  
+ 
+  response.on('end', function(){  
+    var transform = {'tag':'div','html':'${name} name ${name}'};  
+     
+    var html = json2html.transform(body,transform);  
+    console.log('RESPOSTA: ', html);  
+  });  
+});  
 ```  
 
+Após o script para fazer uma `GET` nela o resultado foi:  
+
+```  
+ednilson@EDNILSON-NB:/var/www/workshop-be-mean/nodejs$ node http-get-api-externa.js  
+STATUS: 200  
+HEADERS: {"server":"nginx/1.1.19","date":"Mon, 21 Dec 2015 02:12:49 GMT","content-type":"application/json","transfer-encoding":"chunked","connection":"close","vary":"Accept","x-frame-options":"SAMEORIGIN","cache-control":"s-maxage=360, max-age=360"}  
+RESPOSTA:  <div>Bulbasaur name Bulbasaur</div>  
 ```
