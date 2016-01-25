@@ -1,0 +1,25 @@
+{
+  "name": "aula05",
+  "version": "1.0.0",
+  "description": "Exercícios da Aula 05 de NodeJS do curso Be MEAN",
+  "main": "index.js",
+  "scripts": {
+    "executa": "node script.js"
+  },
+  "keywords": [
+    "node",
+    "mean",
+    "webschool"
+  ],
+  "author": "Ednilson Amaral",
+  "license": "WTFPL",
+  "dependencies": {
+    "gulp": "^3.9.0"
+  },
+  "devDependencies": {
+    "jasmine": "^2.4.1"
+  },
+  "optionalDependencies": {
+    "mongoose": "^4.3.7"
+  }
+}
