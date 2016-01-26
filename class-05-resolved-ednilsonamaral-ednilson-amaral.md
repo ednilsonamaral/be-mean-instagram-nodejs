@@ -424,4 +424,4 @@ response.end();
 
 Print no Navegador:  
 
-![]()
+![Desafio](https://raw.githubusercontent.com/ednilsonamaral/be-mean-instagram-nodejs/master/img/desafio.png)
