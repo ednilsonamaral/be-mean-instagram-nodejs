@@ -206,7 +206,9 @@ ednilson@EDNILSON-NB:/var/www/be-mean-instagram-nodejs$
 
 ## Explique como funciona e de um exemplo de `process`.  
 
-É um objeto global que pode ser acessado de qualquer lugar e é uma instância de **EventEmitter**. No exemplo abaixo, vemos o processo *exit* do evento, que é emitido quando está prestes a sair. Assim que todos as funções dentro do processo estiverem terminadas, ele vai sair, ou seja, *exit*.
+É um objeto global que pode ser acessado de qualquer lugar e é uma instância de **EventEmitter**, ou seja, eles emitem eventos. Ele é útil para podermos identificar algumas informações sobre o ambiente de tempo de execução de um aplicativo, os argumentos passados, o diretório atual, etc.  
+
+No exemplo abaixo, vemos o processo *exit* do evento, que é emitido quando está prestes a sair. Assim que todos as funções dentro do processo estiverem terminadas, ele vai sair, ou seja, *exit*.  
 
 ```js  
 process.on('exit', function(code) {  
@@ -354,4 +356,72 @@ Error: ENOENT: no such file or directory, rename 'arquivo.txt' -> 'arquivoRenome
 Deu esse erro aí porque o arquivo foi deletado, né! Hehehe'
 
 
-## Desafio
+## Desafio  
+
+Arquivo `server.js`:  
+
+```js  
+var http = require('http');  
+var fs = require('fs');  
+
+http.createServer(function (request, response){  
+var path = 'desafio'+ request.url;  
+
+//verificando se ele encontra o diretorio, caso não encontre, criar  
+try{  
+  fs.accessSync('desafio', fs.F_OK);  
+} catch (e){  
+  fs.mkdirSync('desafio');  
+}  
+
+try{  
+  fs.accessSync(path, fs.R_OK);  
+
+  if(fs.lstatSync(path).isDirectory()){  
+    response.writeHeader(200, {"Content-Type": "text/html"});  
+    
+    try{  
+      var indexPath = path+'/index.html';  
+      response.write(fs.readFileSync(indexPath, 'utf-8'));  
+    }catch(e){  
+      var dir = fs.readdirSync(path);  
+      
+      dir.forEach(nome =>{  
+        response.write('<a href="'+ request.url +'/'+ nome +'">'+ nome +'</a><br>');  
+      });  
+    }  
+  } else {  
+    var typeFile = path.split(".");  
+  
+    switch(typeFile[typeFile.length-1]){  
+      case 'css':  
+        response.writeHead(200, {"Content-Type": "text/css"});  
+        break;  
+      case 'html':  
+        response.writeHead(200, {"Content-Type": "text/html"});  
+        break;  
+      case 'jpg':  
+        response.writeHead(200, {"Content-Type": "image/jpeg"});  
+        break;  
+      case 'gif':  
+        response.writeHead(200, {"Content-Type": "image/gif"});  
+        break;  
+    }  
+    
+    response.write(fs.readFileSync(path));  
+  }  
+} catch(e){  
+  response.writeHeader(404, {"Content-Type": "text/html;charset=utf-8"});  
+  response.write('Página não encontrada');  
+}  
+
+response.end();  
+
+}).listen(3000, function(){  
+  console.log("Servidor rodando em localhost:3000");  
+});  
+```  
+
+Print no Navegador:  
+
+![]()
