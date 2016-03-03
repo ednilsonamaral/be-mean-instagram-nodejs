@@ -328,10 +328,250 @@ Inseriu: { _id: 56d84cfdac4d9e351638cce0,
 ```
 
 
-## 3 - Dê 3 exemplos **diferentes**, de cada, utilizando as funções:
-* `findAndModify`
-* `findOneAndUpdate`
-* `findOneAndRemove`
+## 3 - Dê 3 exemplos **diferentes**, de cada, utilizando as funções:  
+
+### Schema e Model  
+
+```js  
+'use strict';  
+
+const mongoose = require('mongoose');  
+const dbURI = 'mongodb://localhost/be-mean-pokemons';  
+
+mongoose.connect(dbURI);  
+
+const Schema = mongoose.Schema;  
+const _schema = {  
+  name: {type: String, required: true, match: /^./i},  
+  description: {type: String, required: true, match: /^./i},  
+  type: {type: String, required: true, match: /^./i},  
+  attack: {type: Number, min: 1},  
+  height: {type: Number}  
+};  
+
+const PokemonSchema = new Schema(_schema);  
+
+const Model = mongoose.model('pokemons', PokemonSchema);  
+```  
+
+
+### `findAndModify`  
+
+#### Exemplo 1
+
+`arquivo.js`  
+
+```js  
+```
+
+
+Saída no terminal:  
+
+```  
+```
+
+#### Exemplo 2
+
+`findAndModify.js`  
+
+```js  
+```
+
+
+Saída no terminal:  
+
+```  
+```
+
+#### Exemplo 3
+
+`findAndModify.js`  
+
+```js  
+```
+
+
+Saída no terminal:  
+
+```  
+```
+
+
+###`findOneAndUpdate`  
+
+#### Exemplo 1
+
+`findOneAndUpdate.js`  
+
+```js  
+const query = {name: /nflmon/i};  
+const mod = {type: 'professional'};  
+const options = {};  
+
+Model.findOneAndUpdate(query, mod, options, function (err, data) {  
+  if (err) return console.log('Erro: ', err);  
+  return console.log('Alterou: ', data);  
+})  
+```
+
+
+Saída no terminal:  
+
+```  
+$ node findOneAndUpdate.js  
+Alterou:  { __v: 0,  
+  height: 2.3,  
+  attack: 105,  
+  type: 'player',  
+  description: 'O pokemon mais QB, fanático por NFL, qualquer um que se aproxime ele dá um tackle',  
+  name: 'NFLMon',  
+  _id: 56d841324d9d0e4b13764e94 }  
+```
+
+#### Exemplo 2
+
+`findOneAndUpdate.js`  
+
+```js  
+const query = {attack: {$lte: 50}};  
+const mod = {attack: 999};  
+const options = {multi: true};  
+
+Model.findOneAndUpdate(query, mod, options, function (err, data) {  
+  if (err) return console.log('Erro: ', err);  
+  return console.log('Alterou: ', data);  
+});  
+```
+
+
+Saída no terminal:  
+
+```  
+$ node findOneAndUpdate.js  
+Alterou:  { moves: [ 'engole fogo', 'assopra veneno', 'desvio' ],  
+  active: false,  
+  height: 0.4,  
+  attack: 49,  
+  type: 'grama',  
+  description: 'Chicote de trepadeira',  
+  name: 'Bulbassauro',  
+  _id: 564cff04f9025dedb2553204 }  
+```
+
+#### Exemplo 3
+
+`findOneAndUpdate.js`  
+
+```js  
+const query = {$and: [{type: 'nerd'}, {attack: {$gte: 40}}]};
+const mod = {attack: 51, description: 'Deu um upgrade, pode melhorar, parça!'};
+const options = {multi: true};
+
+Model.findOneAndUpdate(query, mod, options, function (err, data) {
+  if (err) return console.log('Erro: ', err);
+  return console.log('Alterou: ', data);
+});
+```
+
+
+Saída no terminal:  
+
+```  
+$ node findOneAndUpdate.js  
+Alterou:  { __v: 0,  
+  height: 1.8,  
+  defense: 888,  
+  attack: 49,  
+  type: 'nerd',  
+  description: 'O pokemon mais nerd que já existiu, que existe ou que existirá',  
+  name: 'Nerdmon',  
+  _id: 56aeb9d04bb106b114749436 }  
+```
+
+
+###`findOneAndRemove`  
+
+#### Exemplo 1
+
+`findOneAndRemove.js`  
+
+```js  
+const query = {attack: null};  
+
+Model.findOneAndRemove(query, function (err, data) {  
+  if (err) return console.log('Erro: ', err);  
+  return console.log('Removeu: ', data);  
+});  
+```
+
+
+Saída no terminal:  
+
+```  
+$ node findOneAndRemove.js  
+Removeu:  { description: 'Sem maiores informações',  
+  moves: [],  
+  defense: null,  
+  height: null,  
+  attack: null,  
+  name: 'AindaNaoExisteMom',  
+  _id: 564de099fc7e5880d64a877e }  
+```
+
+#### Exemplo 2
+
+`findOneAndRemove.js`  
+
+```js  
+const query = {$and: [{type: 'google'}, {height: {$gte: 1.5}}]};  
+
+Model.findOneAndRemove(query, function (err, data) {  
+  if (err) return console.log('Erro: ', err);  
+  return console.log('Removeu: ', data);  
+});  
+```
+
+
+Saída no terminal:  
+
+```  
+$ node findOneAndRemove.js  
+Removeu:  { __v: 0,  
+  height: 1.7,  
+  attack: 99,  
+  type: 'google',  
+  description: 'O pokemon mais googlet do universo',  
+  name: 'GoogleMon',  
+  _id: 56d841324d9d0e4b13764e97 }  
+```
+
+#### Exemplo 3
+
+`findOneAndRemove.js`  
+
+```js  
+const query = {height: {$lte: 1.7}};  
+
+Model.findOneAndRemove(query, function (err, data) {  
+  if (err) return console.log('Erro: ', err);  
+  return console.log('Removeu: ', data);  
+});  
+```
+
+
+Saída no terminal:  
+
+```  
+$ node findOneAndRemove.js  
+Removeu:  { moves: [ 'engole fogo', 'assopra veneno', 'desvio' ],  
+  active: false,  
+  height: 0.4,  
+  attack: 999,  
+  type: 'grama',  
+  description: 'Chicote de trepadeira',  
+  name: 'Bulbassauro',  
+  _id: 564cff04f9025dedb2553204 }  
+```
 
 
 ## 4 - Crie 1 *Schema* com todo CRUD funcional e métodos especiais, que agrupe:

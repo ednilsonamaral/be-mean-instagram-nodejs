@@ -1,0 +1,22 @@
+{
+  "name": "exercicio03",
+  "version": "1.0.0",
+  "description": "Resolução do Exercício 03 da Aula 08 de NodeJS",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "be",
+    "mean",
+    "mongoose",
+    "mongodb",
+    "js",
+    "node.js"
+  ],
+  "author": "Ednilson Amaral",
+  "license": "WTFPL",
+  "dependencies": {
+    "mongoose": "^4.4.6"
+  }
+}
