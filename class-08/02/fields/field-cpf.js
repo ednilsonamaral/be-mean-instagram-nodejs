@@ -1,0 +1,1 @@
+module.exports = {type: Number, minlength: 3, maxlength: 11, required: true}

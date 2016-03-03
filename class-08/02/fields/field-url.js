@@ -1,0 +1,1 @@
+module.exports = {type: String, required: true, match: /([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/}
