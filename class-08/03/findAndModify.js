@@ -18,14 +18,10 @@ const PokemonSchema = new Schema(_schema);
 
 const Model = mongoose.model('pokemons', PokemonSchema);
 
-const query = {name: /nflmon/i};
+const query = {_id: "56d841324d9d0e4b13764e94"};
 const mod = {$inc: {attack: 1}};
 
-Model.statics.findAndModify = function (query, sort, doc, options, callback) {
-	return this.pokemons.findAndModify(query, sort, doc, options, callback);
-};
-
-Model.findAndModify(query, [], mod, {}, function (err, data) {
+Model.findAndModify(query, mod, function (err, data) {
 	if (err) return console.log('Erro: ', err);
 	return console.log('Alterou: ', data);
 });
