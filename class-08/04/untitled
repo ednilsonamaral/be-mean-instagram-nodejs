@@ -1,0 +1,45 @@
+
+	{
+		name: {
+			first: 'Demetrious',
+			last: 'Johnson'
+		},
+		age: 29,
+		weight_class: 'Flyweight'
+	},
+	
+	{
+		name: {
+			first: 'Joseph',
+			last: 'Benavidez'
+		},
+		age: 31,
+		weight_class: 'Flyweight'
+	},
+
+	{
+		name: {
+			first: 'Conor',
+			last: 'McGregor'
+		},
+		age: 27,
+		weight_class: 'Featherweight'
+	},
+
+	{
+		name: {
+			first: 'José',
+			last: 'Aldo'
+		},
+		age: 29,
+		weight_class: 'Featherweight'
+	},
+
+	{
+		name: {
+			first: 'Domminick',
+			last: 'Cruz'
+		},
+		age: 30,
+		weight_class: 'Bantamweight'
+	}

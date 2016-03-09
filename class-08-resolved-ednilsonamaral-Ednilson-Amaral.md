@@ -357,44 +357,64 @@ const Model = mongoose.model('pokemons', PokemonSchema);
 
 ### `findAndModify`  
 
-#### Exemplo 1
-
-`arquivo.js`  
-
-```js  
-```
-
-
-Saída no terminal:  
-
-```  
-```
-
-#### Exemplo 2
-
 `findAndModify.js`  
 
 ```js  
+'use strict';  
+
+const mongoose = require('mongoose');  
+const dbURI = 'mongodb://localhost/be-mean-pokemons';  
+
+mongoose.connect(dbURI);  
+
+const Schema = mongoose.Schema;  
+
+const _schema = {  
+  name: {type: String, match: /^./i},  
+  description: {type: String, match: /^./i},  
+  type: {type: String, match: /^./i},  
+  attack: {type: Number, min: 1},  
+  height: {type: Number}  
+};  
+
+const PokemonSchema = new Schema(_schema);  
+
+PokemonSchema.statics.findAndModify = function (query, sort, doc, options, callback) {  
+  return this.collection.findAndModify(query, sort, doc, options, callback);  
+};  
+
+const Model = mongoose.model('pokemons', PokemonSchema);  
+
+const query  = {attack: {$lte: 51}};  
+const mod = {type: 'new york giants'};  
+const opt = {multi: true};  
+
+Model.findAndModify(query, [], mod, opt, function (err, data) {  
+  if (err) return console.log('Erro: ', err);  
+  return console.log('Alterou: ', data);  
+});  
 ```
 
 
 Saída no terminal:  
 
 ```  
+$ node findAndModify.js  
+Alterou:  { lastErrorObject: { updatedExisting: true, n: 1 },  
+  value:   
+   { _id: 56aeb9d04bb106b114749436,  
+     name: 'Nerdmon',  
+     description: 'Deu um upgrade, pode melhorar, parça!',  
+     type: 'nerd',  
+     attack: 51,  
+     defense: 888,  
+     height: 1.8,  
+     __v: 0 },  
+  ok: 1 }  
 ```
 
-#### Exemplo 3
 
-`findAndModify.js`  
-
-```js  
-```
-
-
-Saída no terminal:  
-
-```  
-```
+Na documentação do Mongoose diz que não possui o `findAndModify`, então, com a ajuda de alguns colegas e pesquisando na net, foi mencionado uma alternativa, utilizando o `.statics`, conforme exemplo acima.
 
 
 ###`findOneAndUpdate`  
@@ -574,13 +594,171 @@ Removeu:  { moves: [ 'engole fogo', 'assopra veneno', 'desvio' ],
 ```
 
 
-## 4 - Crie 1 *Schema* com todo CRUD funcional e métodos especiais, que agrupe:
-* virtuals
-* getters & setters
-* method & static
-* embedded document
-* plugins
+## 4 - Crie 1 *Schema* com todo CRUD funcional e métodos especiais, que agrupe:  
+
+* virtuals;  
+* getters & setters;  
+* method & static;  
+* embedded document;  
+* plugins;  
+* middlewares.
+
+
+Realizei a importação do `fighters.json` no *database* para trabalhar com o CRUD em cima de alguns documentos já presentes, e, também adicionei um novo documento via `app.js`.
+
+
+`fighters.json`  
+
+```js  
+{name: {first: 'Demetrious', last: 'Johnson'}, age: 29, weight_class: 'Flyweight'}  
+{name: {first: 'Joseph', last: 'Benavidez'}, age: 31, weight_class: 'Flyweight'}  
+{name: {first: 'Conor', last: 'McGregor'}, age: 27, weight_class: 'Featherweight'}  
+{name: {first: 'José', last: 'Aldo'}, age: 29, weight_class: 'Featherweight'}  
+{name: {first: 'Domminick', last: 'Cruz'}, age: 30, weight_class: 'Bantamweight'}  
+```
+
+
+Importando:  
+
+```  
+$ mongoimport --db bancoTeste --collection fighters --drop --file fighters.json  
+2016-03-07T14:13:25.769-0300  connected to: localhost  
+2016-03-07T14:13:25.770-0300  dropping: bancoTeste.fighters  
+2016-03-07T14:13:26.206-0300  imported 5 documents  
+```
+
+
+Abaixo, os arquivos do CRUD funcional com os métodos solicitados.
+
+
+`config.js`  
+
+```js  
+const mongoose = require('mongoose');  
+const dbURI = 'mongodb://localhost/bancoTeste';  
+
+mongoose.connect(dbURI);  
+
+mongoose.connection.on('connected', function () {  
+  console.log('Mongoose default connection connected to ' + dbURI);  
+});  
+
+mongoose.connection.on('error',function (err) {  
+  console.log('Mongoose default connection error: ' + err);  
+});  
+
+mongoose.connection.on('disconnected', function () {  
+  console.log('Mongoose default connection disconnected');  
+});  
+
+mongoose.connection.on('open', function () {  
+  console.log('Mongoose default connection is open');  
+});  
+
+process.on('SIGINT', function() {  
+  mongoose.connection.close(function () {  
+    console.log('Mongoose default connection disconnected through app termination');  
+    process.exit(0);  
+  });  
+});  
+```
+
+
+`app.js`  
+
+```js  
+
+```
+
+
+`controller.js`  
+
+```js  
+'use strict';  
+
+const Schema = require('./schema');  
+const Model = require('./model')(Schema, 'fighters');  
+
+const CRUD = {  
+  create: function(data) {  
+    console.log("create: ", data);  
+    const FighterModel = new Model(data);  
+    FighterModel.save(function (err, data) {  
+      if (err) return console.log('ERRO: ', err);  
+      return console.log('Inseriu:', data);  
+    });  
+  },  
+  retrieve: function(query) {  
+    Schema  
+      .virtual('name.full')  
+      .get(function (){  
+        return this.name.first + ' ' + this.name.last;  
+      });  
+
+    Model.findById(query, function (err, data) {  
+      if (err) return console.log('ERRO: ', err);  
+      return console.log('Nome: ', data.name.full, '\nCategoria de Peso: ', data.weight_class, '\nIdade: ', data.age);  
+    });  
+  },  
+  update: function(query, mod, options) {  
+    var options = options || {};  
+    Model.update(query, mod, options, function (err, data) {  
+      if (err) return console.log('ERRO: ', err);  
+      return console.log('Alterou:', data);  
+    });  
+  },  
+  delete: function(query) {  
+    Model.remove(query, function (err, data) {  
+      if (err) return console.log('ERRO: ', err);  
+      return console.log('Deletou:', data);  
+    });  
+  },  
+};  
+
+module.exports = CRUD;  
+```
+
+
+`model.js`  
+
+```js  
+module.exports = function (Schema, ModelName) {  
+  const mongoose = require('mongoose');  
+  return mongoose.model(ModelName, Schema);  
+};  
+```
+
+
+`schema.js`  
+
+```js  
+const mongoose = require('mongoose');  
+const Schema = mongoose.Schema;  
+
+const name = require('./fields/field-name');  
+const age = require('./fields/field-age');  
+const weight_class = require('./fields/field-weight_class');  
+const created_at = require('./fields/field-created_at');  
+
+const _schema = {  
+  name,  
+  age,  
+  weight_class,  
+  created_at  
+};  
+
+module.exports = new Schema(_schema);  
+```
+
+
+Aqui estão os *fields*:  
+
+```js  
+
+```
+
 * middlewares
+* plugins
 
 
 ## 5 - Crie 1 *Schema* para `password` com criptografia e arquitetura atômica.
