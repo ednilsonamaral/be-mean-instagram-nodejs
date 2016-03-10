@@ -885,3 +885,182 @@ module.exports = { type: Date, default: Date.now }
 * use SHA256 com SALT como criptografia;
 * use middleware com pre save;
 * use methods.
+
+
+`app.js`  
+
+```js  
+'use strict';  
+
+require('./db/config');  
+
+const CRUD = require('./controller');  
+const Model = require('./model');  
+
+const data = {  
+  name: {  
+    first: 'Ednilson',  
+    last: 'Amaral'  
+  },  
+  password: '123456987'  
+}  
+
+CRUD.create(data);
+```
+
+
+`controller.js`  
+
+```js  
+'use strict';  
+
+const mongoose = require('mongoose');  
+
+const Schema = require('./schema');  
+const Model = require('./model')(Schema, 'userPass');  
+
+const CRUD = {  
+  create: function(data) {  
+    console.log("create: ", data);  
+    SenhaModel.save(function (err, data) {  
+      if (err) return console.log('ERRO: ', err);  
+      return console.log('Inseriu:', data);  
+    });  
+  },  
+  retrieve: function(query) {  
+    Schema  
+      .virtual('name.full')  
+      .get(function (){  
+        return this.name.first + ' ' + this.name.last;  
+      });  
+
+    Model.findById(query, function (err, data) {  
+      if (err) return console.log('ERRO: ', err);  
+      return console.log('Nome: ', data.name.full, '\nSenha: ', data.password);  
+    });  
+  },  
+  update: function(query, mod, options) {  
+    var options = options || {};  
+    Model.update(query, mod, options, function (err, data) {  
+      if (err) return console.log('ERRO: ', err);  
+      return console.log('Alterou:', data);  
+    });  
+  },  
+  delete: function(query) {  
+    Model.remove(query, function (err, data) {  
+      if (err) return console.log('ERRO: ', err);  
+      return console.log('Deletou:', data);  
+    });  
+  },  
+};  
+
+module.exports = CRUD;  
+```
+
+
+`schema.js`  
+
+```js  
+const mongoose = require('mongoose');  
+const Schema = mongoose.Schema;  
+
+const name = require('./fields/field-name');  
+const password = require('./fields/field-password');  
+
+function criaUsuario (){  
+  const novoUsuario = new Schema({  
+    name,  
+    password  
+  });  
+
+  novoUsuario.methods.vaiCriptografar = function (){  
+    const crypto = require('crypto');  
+    //fazendo a mágica acontecer  
+    const salt = crypto.randomBytes(128).toString('base64');  
+    const chave = crypto.pbkdf2Sync(this.password, 'salt', 100000, 256, 'sha256');  
+
+    return chave.toString('hex');  
+  };  
+
+  novoUsuario.pre('save', true, function (next, done) {  
+    console.log('Senha SEM criptografia: ', '${this.password}');  
+    //fazendo a mágica acontecer  
+    this.password = this.vaiCriptografar();  
+    console.log('\nSenha COM criptografia: ', '${this.password}');  
+    next();  
+  });  
+  
+  return mongoose.model('SenhaModel', novoUsuario);  
+}  
+
+
+module.exports = exports = criaUsuario();  
+```
+
+
+`model.js`  
+
+```js  
+module.exports = function (Schema, ModelName) {  
+  const mongoose = require('mongoose');  
+  return mongoose.model(ModelName, Schema);  
+};  
+```
+
+
+`fields`  
+
+```js  
+//field-name  
+module.exports = {  
+  first: {type: String, match: /^./i},  
+  last: {type: String, match: /^./i}  
+},{  
+  toObject: {virtuals: true},  
+  toJSON: {virtuals: true}  
+}  
+
+//field-password  
+module.exports = {type: String, match: /^./i}  
+```
+
+
+`config.js`  
+
+```js  
+const mongoose = require('mongoose');  
+const dbURI = 'mongodb://localhost/bancoTeste';  
+
+mongoose.connect(dbURI);  
+
+mongoose.connection.on('connected', function () {  
+  console.log('Mongoose default connection connected to ' + dbURI);  
+});  
+
+mongoose.connection.on('error',function (err) {  
+  console.log('Mongoose default connection error: ' + err);  
+});  
+
+mongoose.connection.on('disconnected', function () {  
+  console.log('Mongoose default connection disconnected');  
+});  
+
+mongoose.connection.on('open', function () {  
+  console.log('Mongoose default connection is open');  
+});  
+
+process.on('SIGINT', function() {  
+  mongoose.connection.close(function () {  
+    console.log('Mongoose default connection disconnected through app termination');  
+    process.exit(0);  
+  });  
+});  
+```
+
+
+Saída no terminal:  
+
+```  
+Senha SEM criptografia: 123456987  
+Senha COM criptografia: B4FBE57144DF88EEE69838FEE592DFE7FC250722CBCDB217CC89E67295FD8073  
+```
