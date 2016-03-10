@@ -667,7 +667,63 @@ process.on('SIGINT', function() {
 `app.js`  
 
 ```js  
+'use strict';  
 
+require('./db/config');  
+
+const CRUD = require('./controller');  
+
+//inserindo novo documento  
+const hab1 = {  
+  title: 'Jiu Jitsu',  
+  since: 2005  
+};  
+
+const hab2 = {  
+  title: 'Muay Thai',  
+  since: 1999  
+};  
+
+const hab3 = {  
+  title: 'Boxe',  
+  since: 2001  
+};  
+
+const data = {  
+  name: {  
+    first: 'Anderson',  
+    last: 'Silva'  
+  },  
+  age: 42,  
+  skills: [hab1, hab2, hab3],  
+  weight_class: 'Middleweight'  
+};  
+
+CRUD.create(data);  
+
+
+//pesquisando um documento  
+const query = "56ddce078b09ec822118e4c7";  
+
+CRUD.retrieve(query);  
+
+
+//pesquisando através de um method  
+const query = {name: {first: 'Mauro', last: 'Filho'}, weight_class: /featherweight/i};  
+
+CRUD.retrieve_method(query);  
+
+
+//pesquisando através de uma static  
+const query = {name: {first: 'Anderson', last: 'Silva'}};  
+
+CRUD.retrieve_static(query);  
+
+
+//pesquisando através de middleware pre count  
+const query = {age: 29};  
+
+CRUD.retrieve_middleware(query);  
 ```
 
 
@@ -675,6 +731,8 @@ process.on('SIGINT', function() {
 
 ```js  
 'use strict';  
+
+const mongoose = require('mongoose');  
 
 const Schema = require('./schema');  
 const Model = require('./model')(Schema, 'fighters');  
@@ -700,6 +758,38 @@ const CRUD = {
       return console.log('Nome: ', data.name.full, '\nCategoria de Peso: ', data.weight_class, '\nIdade: ', data.age);  
     });  
   },  
+  retrieve_method: function(query){  
+    Schema.methods.findSimilarType = function findSimilarType (callback) {  
+      return this.model('MesmaCategoria', Schema);  
+    };  
+
+    const MethodModel = mongoose.model('MethodModel', Schema);  
+    const outroFighter = new MethodModel(query);  
+  
+    outroFighter.findSimilarType(function (err, data){  
+      if (err) return console.log('ERRO: ', err);  
+      return data.forEach((fighters) => console.log('fighter: ', fighters));  
+    });  
+  },  
+  retrieve_static: function(query) {  
+    Schema.statics.search = function (name, callback) {  
+      return this.where('name', new RegExp(name, 'i')).exec(callback);  
+    };  
+
+    const StaticModel = mongoose.model('StaticModel', Schema);  
+    const maisOutro = new StaticModel(query);  
+
+    maisOutro.search(query, function (err, data) {  
+      if (err) return console.log('ERRO: ', err);  
+      return data.forEach((fighters) => console.log('fighter: ', fighters));  
+    });  
+  },  
+  retrieve_middleware: function(query){  
+    const countQuery = Model.where(query).count((err, count) => {  
+      if (err) return console.log('ERRO: ', err);  
+      return console.log('Existem ' + count + ' lutadores com a mesma idade!');  
+    });  
+  },  
   update: function(query, mod, options) {  
     var options = options || {};  
     Model.update(query, mod, options, function (err, data) {  
@@ -715,7 +805,7 @@ const CRUD = {
   },  
 };  
 
-module.exports = CRUD;  
+module.exports = CRUD;    
 ```
 
 
@@ -740,10 +830,16 @@ const age = require('./fields/field-age');
 const weight_class = require('./fields/field-weight_class');  
 const created_at = require('./fields/field-created_at');  
 
+const skill = new Schema({  
+  title: String,  
+  since: Number  
+});  
+
 const _schema = {  
   name,  
   age,  
   weight_class,  
+  skills: [skill],  
   created_at  
 };  
 
@@ -754,11 +850,35 @@ module.exports = new Schema(_schema);
 Aqui estão os *fields*:  
 
 ```js  
+//field-name.js  
+module.exports = {  
+  first: {type: String, match: /^./i},  
+  last: {type: String, match: /^./i}  
+},{  
+  toObject: {virtuals: true},  
+  toJSON: {virtuals: true}  
+}  
 
+//field-age.js  
+module.exports = {type: Number, min: 18}  
+
+//field-skill.js  
+module.exports = {type: [skill]}  
+
+//field-weight_class.js  
+function toUpper (v) {  
+  return v.toUpperCase();  
+}  
+
+module.exports = {  
+  type: String,   
+  match: /^./i,  
+  get: toUpper  
+}  
+
+//field-created_at.js  
+module.exports = { type: Date, default: Date.now }  
 ```
-
-* middlewares
-* plugins
 
 
 ## 5 - Crie 1 *Schema* para `password` com criptografia e arquitetura atômica.

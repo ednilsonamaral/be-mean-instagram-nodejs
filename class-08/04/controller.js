@@ -51,7 +51,12 @@ const CRUD = {
       if (err) return console.log('ERRO: ', err);
       return data.forEach((fighters) => console.log('fighter: ', fighters));
     });
-
+  },
+  retrieve_middleware: function(query){
+    const countQuery = Model.where(query).count((err, count) => {
+      if (err) return console.log('ERRO: ', err);
+      return console.log('Existem ' + count + ' lutadores com a mesma idade!');
+    });
   },
   update: function(query, mod, options) {
     var options = options || {};
