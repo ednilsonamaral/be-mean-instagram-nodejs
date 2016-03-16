@@ -203,7 +203,7 @@ $ mocha calc.spec.js
 ```
 
 
-Apenas um pequenina observação, quando fui fazer esse exercício (16/03/2016 às 08:30) fui visualizar os exemplos na aposta, então acabei notando que o Prof. Itacir colocou como exemplo a resolução do exercício, já com os módulos solicitados por ele e raiz quadrada. Apenas fiz os testes e colei os resultados aqui. Porém, os códigos acima são idênticos aos exemplos que ele deixou na apostila. [Link](https://github.com/Webschool-io/be-mean-instagram/tree/master/Apostila/module-nodejs/src/tdd/chai)!
+Apenas um pequenina observação, quando fui fazer esse exercício (16/03/2016 às 08:30) fui visualizar os exemplos na apostila, então acabei notando que o Prof. Itacir colocou como exemplo a resolução do exercício, já com os módulos solicitados por ele e raiz quadrada. Apenas fiz os testes e colei os resultados aqui. Porém, os códigos acima são idênticos aos exemplos que ele deixou na apostila. [Link](https://github.com/Webschool-io/be-mean-instagram/tree/master/Apostila/module-nodejs/src/tdd/chai)!
 
 
 ## Use o exemplo  de testes do *getter* e *setter* e crie um teste para o *method*, use o exemplo (lembre-se de usar callback é testar).  
@@ -219,4 +219,6 @@ Apenas um pequenina observação, quando fui fazer esse exercício (16/03/2016 �
 ## No *controller* ainda faltam dois métodos para testar, o *update* e *delete*, crie-os  e faça os testes, no mesmo aquivo que contém os testes, *create* e *retrieve*.
 
 
-## Defina TDD em 3 linhas, baseado no que foi dito até o momento.
+## Defina TDD em 3 linhas, baseado no que foi dito até o momento.  
+
+TDD é o desenvolvimento de softwares orientado a testes. Mas não fica apenas testando os códigos, pode ser considerado uma filosofia. Sua adoção é influenciada fortemente pelo movimento ágil. Ele traz inúmeras vantagens para sistemas complexos, sejam pequenos, médios ou grandes, já que é possível reduzir o tempo gasto em *deploy* e correção de bugs, e não é desenvolvido códigos desnecessários e melhora a qualidade do software.
