@@ -1,0 +1,20 @@
+{
+  "name": "exercicio-chai",
+  "version": "1.0.0",
+  "description": "Resolução e Exemplos do Chai",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "chai",
+    "js",
+    "nodejs",
+    "tdd"
+  ],
+  "author": "Ednilson Amaral",
+  "license": "WTFPL",
+  "devDependencies": {
+    "chai": "^3.5.0"
+  }
+}
