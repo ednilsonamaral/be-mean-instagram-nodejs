@@ -16,5 +16,8 @@
   "license": "WTFPL",
   "devDependencies": {
     "chai": "^3.5.0"
+  },
+  "dependencies": {
+    "mongoose": "^4.4.7"
   }
 }

@@ -206,19 +206,191 @@ $ mocha calc.spec.js
 Apenas um pequenina observação, quando fui fazer esse exercício (16/03/2016 às 08:30) fui visualizar os exemplos na apostila, então acabei notando que o Prof. Itacir colocou como exemplo a resolução do exercício, já com os módulos solicitados por ele e raiz quadrada. Apenas fiz os testes e colei os resultados aqui. Porém, os códigos acima são idênticos aos exemplos que ele deixou na apostila. [Link](https://github.com/Webschool-io/be-mean-instagram/tree/master/Apostila/module-nodejs/src/tdd/chai)!
 
 
-## Use o exemplo  de testes do *getter* e *setter* e crie um teste para o *method*, use o exemplo (lembre-se de usar callback é testar).  
+## Use o exemplo  de testes do *getter* e *setter* e crie um teste para o *method*, use o exemplo (lembre-se de usar callback é testar):  
 
 [https://github.com/Webschool-io/be-mean-instagram/blob/master/Apostila/module-nodejs/src/mongoose-atomic/schema-method.js](https://github.com/Webschool-io/be-mean-instagram/blob/master/Apostila/module-nodejs/src/mongoose-atomic/schema-method.js)
 
 
-## Use o exemplo  de testes do *getter* e *setter*, o *static*, use o exemplo (lembre-se de usar callback é testar).  
+`schema-method.spec.js`  
+
+```js  
+'use strict';  
+
+const expect = require('chai').expect,  
+      Pokemon = require('./schema-method'),  
+      util = require('util');  
+
+describe('Testando Methods', () => {  
+  const namePokemonzinho = {name: 'Pikachu'};  
+  const typePokemonzinho = {type: 'fogo'};  
+
+  describe('method... ', () => {  
+    it('expect type.typePokemonzinho to be eq ', () => {  
+      Pokemon.findOne(typePokemonzinho, (err, data) => {  
+        expect(err).to.not.exist;  
+        expect(data.type).to.be.eq(typePokemonzinho);  
+
+        done();  
+      });  
+    });  
+  });  
+});  
+```
+
+
+Saída no terminal:  
+
+```  
+$ mocha schema-method.spec.js  
+
+
+  Testando Methods  
+    method...  
+      ✓ expect type.typePokemonzinho to be eq  
+
+
+  1 passing (60ms)  
+```
+
+
+## Use o exemplo  de testes do *getter* e *setter*, o *static*, use o exemplo (lembre-se de usar callback é testar):  
 
 [https://github.com/Webschool-io/be-mean-instagram/blob/master/Apostila/module-nodejs/src/mongoose-atomic/schema-static.js](https://github.com/Webschool-io/be-mean-instagram/blob/master/Apostila/module-nodejs/src/mongoose-atomic/schema-static.js)
 
 
-## No *controller* ainda faltam dois métodos para testar, o *update* e *delete*, crie-os  e faça os testes, no mesmo aquivo que contém os testes, *create* e *retrieve*.
+`schema-static.spec.js`  
+
+```js  
+'use strict';  
+
+const expect = require('chai').expect,  
+      Pokemon = require('./schema-method'),  
+      util = require('util');  
+
+describe('Testando Static', () => {  
+  const namePokemonzinho = {name: /pikachu/i};  
+
+  describe('static... ', () => {  
+    it('expect name.namePokemonzinho to be eq ', () => {  
+      Pokemon.findOne(namePokemonzinho, (err, data) => {  
+        expect(err).to.not.exist;  
+        expect(data.name).to.be.eq(namePokemonzinho);  
+
+        done();  
+      });  
+    });  
+  });  
+});  
+```
+
+
+Saída no terminal:  
+
+```  
+$ mocha schema-static.spec.js  
+
+
+  Testando Static  
+    static...  
+      ✓ expect name.namePokemonzinho to be eq  
+
+
+  1 passing (56ms)  
+```
+
+
+## No *controller* ainda faltam dois métodos para testar, o *update* e *delete*, crie-os  e faça os testes, no mesmo aRquivo que contém os testes, *create* e *retrieve*.
+
+
+### Update  
+
+```js  
+'use strict';  
+
+const expect = require('chai').expect;  
+const ctrl = require('./pokemon-controller');  
+
+describe('Controller of Pokemons', () => {  
+  describe('UPDATE A POKEMON... ', () => {  
+    const descriptionPokemonzinho = {description: 'olá, tudo bem?!'};  
+    const attackPokemonzinho = {attack: {$gte: 25}};  
+
+    it('expect update a pokemonzinho ', done => {  
+      ctrl.update(descriptionPokemonzinho, attackPokemonzinho,(err,data) => {  
+        expect(err).to.not.exist;  
+        expect(data._id).to.exist;  
+        expect(data.attack).to.be.eq(attackPokemonzinho);  
+        expect(data.description).to.be.eq(descriptionPokemonzinho);  
+
+        done();  
+      });  
+    });  
+  });  
+});  
+```
+
+
+Saída no terminal:  
+
+```  
+$ mocha pokemon-controller.spec.js  
+
+
+  Controller of Pokemons  
+    UPDATE A POKEMON...  
+Alterou: { result: { ok: 1, n: 1},  
+
+    ✓ expect update a pokemonzinho  
+
+
+1 passing (56ms)  
+```
+
+
+### Delete  
+
+```js  
+'use strict';  
+
+const expect = require('chai').expect;  
+const ctrl = require('./pokemon-controller');  
+
+describe('Controller of Pokemons', () => {  
+  describe('DELETE A POKEMON... ', () => {  
+    const descriptionPokemonzinho = {description: 'olá, tudo bem?!'};  
+    const attackPokemonzinho = {attack: {$gte: 25}};  
+
+    it('expect delete a pokemonzinho ', done => {  
+      ctrl.delete(attackPokemonzinho,(err,data) => {  
+        expect(err).to.not.exist;  
+        expect(data._id).to.exist;  
+        expect(data.attack).to.be.eq(attackPokemonzinho);  
+
+        done();  
+      });  
+    });  
+  });  
+});  
+```
+
+
+Saída no terminal:  
+
+```  
+$ mocha pokemon-controller.spec.js  
+
+
+  Controller of Pokemons  
+    DELETE A POKEMON...  
+Deletou: { result: { ok: 1, n: 1},  
+
+    ✓ expect delete a pokemonzinho  
+
+
+1 passing (56ms)  
+```
 
 
 ## Defina TDD em 3 linhas, baseado no que foi dito até o momento.  
 
-TDD é o desenvolvimento de softwares orientado a testes. Mas não fica apenas testando os códigos, pode ser considerado uma filosofia. Sua adoção é influenciada fortemente pelo movimento ágil. Ele traz inúmeras vantagens para sistemas complexos, sejam pequenos, médios ou grandes, já que é possível reduzir o tempo gasto em *deploy* e correção de bugs, e não é desenvolvido códigos desnecessários e melhora a qualidade do software.
+TDD é o desenvolvimento de softwares orientado a testes. Não fica apenas testando os códigos, também é considerado uma filosofia. Fortemente influenciada pelo movimento ágil. Ele traz inúmeras vantagens para sistemas complexos, sejam pequenos, médios ou grandes, já que é possível reduzir o tempo de *deploy* e correção de bugs, não desenvolvendo códigos desnecessários, melhorando assim a qualidade do software.
