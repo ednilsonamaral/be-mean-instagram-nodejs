@@ -1,7 +1,7 @@
 # Node.js - Aula 10 - Exercício  
 **user:** [ednilsonamaral](https://github.com/ednilsonamaral)  
 **autor:** Ednilson Amaral  
-**data:**
+**data:** 1468266682866
 
 
 ## Criar um módulo de redirecionamento para quando não encontrar a rota redirecionar para URL/404.
